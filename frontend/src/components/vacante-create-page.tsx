@@ -176,8 +176,9 @@ function VacanteCreatePage({ onBackToDashboard }: VacanteCreatePageProps) {
         <p className="page-eyebrow">Control de vacantes</p>
         <h1 className="page-title">Registrar una vacante</h1>
         <p className="page-lede">
-          Completá los datos del puesto. La ficha de la derecha se actualiza
-          mientras escribís, como una tarjeta de seguimiento sobre el escritorio.
+          Completá los datos del puesto. <br /> 
+          Debajo del formulario aparece una
+          vista previa breve mientras escribís.
         </p>
       </header>
 
@@ -417,11 +418,9 @@ function VacanteCreatePage({ onBackToDashboard }: VacanteCreatePageProps) {
         </form>
 
         <VacantePreviewCard
-          vacante={createdVacante ?? { id: "", puesto: "", requisitos: "", empresa: "", modalidad: "", fecha_vto: undefined, estado_vacante: EstadoVacante.PENDIENTE, prioridad_vacante: PrioridadVacante.MEDIA }}
-          onCreateAnother={() => {
-            resetForm();
-            setCreatedVacante({ id: "", puesto: "", requisitos: "", empresa: "", modalidad: "", fecha_vto: undefined, estado_vacante: EstadoVacante.PENDIENTE, prioridad_vacante: PrioridadVacante.MEDIA });
-          }}
+          puesto={puesto}
+          empresa={empresa}
+          modalidad={modalidad}
         />
       </div>
 

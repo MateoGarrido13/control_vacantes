@@ -1,24 +1,20 @@
-# Task App UI
+# Frontend — Control de Vacantes
 
-The user interface for the Devtiro Task App build. It's a React app, built with Vite and TypeScript.
+Interfaz React (Vite + TypeScript) para gestionar vacantes.
 
-**You don't need to run this directly.** From the repository root, `docker compose up` builds this
-into an image and runs it for you — no Node install required. See the root [README](../README.md).
+## Desarrollo local
 
-## Running it directly
-
-If you'd rather run it without Docker, you'll need Node 20 or later:
+Hace falta Node 20 o posterior. El backend tiene que estar corriendo en el puerto 8080.
 
 ```bash
 npm install
 npm run dev
 ```
 
-It runs on http://localhost:3000 and proxies `/api` calls to the Spring Boot app on port 8080, which
-needs to be running.
+La UI queda en http://localhost:3000 y reenvía `/api` al backend.
 
-## How it talks to the backend
+Desde la raíz del repositorio también se puede usar `./run vacantes`.
 
-In the Docker image, nginx serves the built app and proxies `/api/` through to the backend. The host
-and port come from the `BACKEND_HOST` and `BACKEND_PORT` environment variables, which the
-`docker-compose.yml` at the repository root sets for you.
+## Docker
+
+En la imagen, nginx sirve el build y proxea `/api/` al backend. El host y el puerto salen de `BACKEND_HOST` y `BACKEND_PORT`. El `docker-compose.yml` de la raíz usa `BACKEND_PORT=8080`.

@@ -1,4 +1,4 @@
-/** The status of the task. */
+/** Estado de seguimiento de la vacante. */
 export enum EstadoVacante {
   PENDIENTE = "PENDIENTE",
   ENVIADA = "ENVIADA",

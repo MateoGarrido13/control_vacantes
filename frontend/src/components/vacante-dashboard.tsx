@@ -93,10 +93,9 @@ function VacanteDashboard({ onCreateNew, onEditVacante }: VacanteDashboardProps)
       <header className="page-header page-header--row">
         <div>
           <p className="page-eyebrow">Control de vacantes</p>
-          <h1 className="page-title">Mesa de seguimiento</h1>
+          <h1 className="page-title">Panel Principal</h1>
           <p className="page-lede">
-            Listado de vacantes registradas en el backend. Se actualiza con un
-            GET a <code>/api/v1/vacantes</code>.
+            Listado de vacantes registradas en el backend.
           </p>
         </div>
         <div className="dashboard-actions">

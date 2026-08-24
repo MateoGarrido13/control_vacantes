@@ -1,40 +1,37 @@
 import type { FC } from "react";
-import { Vacante } from "@/types/vacante";
-import { Button } from "@/components/ui/button";
 
-
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 interface VacantePreviewCardProps {
-    vacante: Vacante;
-    onCreateAnother: () => void;
-  }
-  const formatDate = (date?: Date) =>
-    date
-      ? date.toLocaleDateString("es-AR", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        })
-      : "Sin vencimiento";
-  const VacantePreviewCard: FC<VacantePreviewCardProps> = ({ vacante, onCreateAnother }) => {
-    return (
-        <Card className="w-full max-w-md">
-            <CardHeader>
-                <CardTitle>{vacante.puesto}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p>{vacante.requisitos}</p>
-                <p>{vacante.empresa}</p>
-                <p>{vacante.modalidad}</p>
-                <p>{formatDate(vacante.fecha_vto)}</p>
-                <p>{vacante.estado_vacante}</p>
-                <p>{vacante.prioridad_vacante}</p>
-            </CardContent>
-            <CardFooter>
-                <Button onClick={onCreateAnother}>Crear otra vacante</Button>
-            </CardFooter>
-        </Card>
-    );
+  puesto: string;
+  empresa: string;
+  modalidad: string;
+}
+
+const VacantePreviewCard: FC<VacantePreviewCardProps> = ({
+  puesto,
+  empresa,
+  modalidad,
+}) => {
+  const puestoLabel = puesto.trim();
+  const empresaLabel = empresa.trim();
+
+  return (
+    <aside className="preview-card" aria-live="polite">
+      <div className="preview-card__perforation" aria-hidden />
+      <p className="preview-card__eyebrow">Vista previa</p>
+      <h2 className="preview-card__title">
+        <span className={puestoLabel ? undefined : "preview-card__placeholder"}>
+          {puestoLabel || "Puesto"}
+        </span>
+        <span className="preview-card__separator"> — </span>
+        <span className={empresaLabel ? undefined : "preview-card__placeholder"}>
+          {empresaLabel || "Empresa"}
+        </span>
+      </h2>
+      <div className="preview-card__meta">
+        <span className="preview-card__chip">{modalidad || "Modalidad"}</span>
+      </div>
+    </aside>
+  );
 };
 
 export default VacantePreviewCard;

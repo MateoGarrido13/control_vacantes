@@ -51,14 +51,6 @@
     --input: 210 22% 83%;
     --ring: 209 61% 30%;
     --radius: 0.625rem;
-    --sidebar-background: 210 24% 96%;
-    --sidebar-foreground: 214 40% 14%;
-    --sidebar-primary: 209 61% 30%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 210 20% 94%;
-    --sidebar-accent-foreground: 214 40% 14%;
-    --sidebar-border: 210 22% 83%;
-    --sidebar-ring: 209 61% 30%;
   }
 
   .dark {
@@ -102,14 +94,6 @@
     --border: 214 22% 26%;
     --input: 214 22% 26%;
     --ring: 207 55% 68%;
-    --sidebar-background: 215 32% 12%;
-    --sidebar-foreground: 210 30% 94%;
-    --sidebar-primary: 207 55% 68%;
-    --sidebar-primary-foreground: 215 35% 10%;
-    --sidebar-accent: 214 24% 18%;
-    --sidebar-accent-foreground: 210 30% 94%;
-    --sidebar-border: 214 22% 26%;
-    --sidebar-ring: 207 55% 68%;
   }
 }
 
@@ -277,10 +261,9 @@
 
 /* —— Create layout —— */
 .create-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.9fr);
-  gap: 1.5rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .create-form {
@@ -346,28 +329,30 @@
 
 /* —— Signature: live tracking card —— */
 .preview-card {
-  position: sticky;
-  top: 1.25rem;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.85rem;
   background: var(--preview-bg);
   border: 1px solid var(--rule);
-  border-radius: 0.85rem;
-  padding: 1.35rem 1.25rem 1.4rem;
-  box-shadow: var(--panel-shadow);
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.85rem 0.55rem 1.1rem;
+  box-shadow: none;
   overflow: hidden;
   transition:
     border-color 180ms ease,
-    box-shadow 180ms ease,
     background-color 250ms ease;
 }
 
 .preview-card__perforation {
   position: absolute;
   inset: 0 auto 0 0;
-  width: 10px;
+  width: 7px;
   background:
-    radial-gradient(circle at 0 10px, transparent 5px, var(--perforation) 5.5px) 0 0 /
-    10px 18px repeat-y;
-  opacity: 0.9;
+    radial-gradient(circle at 0 8px, transparent 3.5px, var(--perforation) 4px) 0 0 /
+    7px 14px repeat-y;
+  opacity: 0.85;
 }
 
 .preview-card--alta {
@@ -383,21 +368,33 @@
 }
 
 .preview-card__eyebrow {
-  margin: 0 0 0.55rem;
-  padding-left: 0.55rem;
-  font-size: 0.7rem;
+  margin: 0;
+  padding-left: 0;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
 }
 
 .preview-card__title {
   margin: 0;
-  padding-left: 0.55rem;
-  font-size: 1.45rem;
-  line-height: 1.2;
+  padding-left: 0;
+  flex: 1 1 12rem;
+  min-width: 0;
+  font-size: 0.95rem;
+  line-height: 1.3;
   color: var(--ink);
+}
+
+.preview-card__separator {
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.preview-card__placeholder {
+  color: var(--ink-muted);
+  font-weight: 500;
 }
 
 .preview-card__company {
@@ -410,9 +407,9 @@
 .preview-card__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  padding-left: 0.55rem;
-  margin-bottom: 1rem;
+  gap: 0.35rem;
+  padding-left: 0;
+  margin: 0;
 }
 
 .preview-card__chip {
@@ -421,8 +418,8 @@
   border-radius: 999px;
   border: 1px solid var(--rule);
   background: var(--chip-bg);
-  padding: 0.2rem 0.65rem;
-  font-size: 0.72rem;
+  padding: 0.12rem 0.5rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--ink);
 }
@@ -587,12 +584,7 @@
 
 @media (max-width: 900px) {
   .create-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .preview-card {
-    position: static;
-    order: -1;
+    gap: 0.6rem;
   }
 }
 

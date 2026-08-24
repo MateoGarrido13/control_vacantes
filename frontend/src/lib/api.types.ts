@@ -6,7 +6,7 @@ export interface ApiErrorResponseDto {
 }
 
 /** Response DTO from the Spring Boot API (VacanteDto). */
-export interface TodoResponseDto {
+export interface VacanteResponseDto {
   id: string;
   puesto: string;
   requisitos: string;
@@ -17,10 +17,10 @@ export interface TodoResponseDto {
   estado: EstadoVacante;
 }
 
-/**
- * Maps a TodoResponseDto to a Vacante.
- */
-export const todoResponseDtoToTodo = (dto: TodoResponseDto): Vacante => {
+/** Maps a VacanteResponseDto to a Vacante. */
+export const vacanteResponseDtoToVacante = (
+  dto: VacanteResponseDto,
+): Vacante => {
   return {
     id: dto.id,
     puesto: dto.puesto,

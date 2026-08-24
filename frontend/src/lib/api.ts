@@ -2,16 +2,16 @@ import { Vacante } from "@/types/vacante";
 import {
   ApiErrorResponseDto,
   CreateVacanteRequestDto,
-  TodoResponseDto,
-  todoResponseDtoToTodo,
+  VacanteResponseDto,
+  vacanteResponseDtoToVacante,
   UpdateVacanteRequestDto,
 } from "./api.types";
 
 /**
  * Create a new vacante.
  *
- * @param request The request to create a new task.
- * @returns The created task.
+ * @param request The request to create a new vacante.
+ * @returns The created vacante.
  */
 export const createVacante = async (
   request: CreateVacanteRequestDto,
@@ -36,13 +36,15 @@ export const createVacante = async (
     throw new Error(errorMessage);
   }
 
-  return todoResponseDtoToTodo((await response.json()) as TodoResponseDto);
+  return vacanteResponseDtoToVacante(
+    (await response.json()) as VacanteResponseDto,
+  );
 };
 
 /**
- * List all tasks.
+ * List all vacantes.
  *
- * @returns The list of tasks.
+ * @returns The list of vacantes.
  */
 export const listVacantes = async (): Promise<Vacante[]> => {
   const response = await fetch("/api/v1/vacantes", {
@@ -64,22 +66,22 @@ export const listVacantes = async (): Promise<Vacante[]> => {
     }
   }
 
-  const dtos = (await response.json()) as TodoResponseDto[];
-  return dtos.map((dto) => todoResponseDtoToTodo(dto));
+  const dtos = (await response.json()) as VacanteResponseDto[];
+  return dtos.map((dto) => vacanteResponseDtoToVacante(dto));
 };
 
 /**
- * Update an existing task.
+ * Update an existing vacante.
  *
- * @param todoId The ID of the task to update.
- * @param request The request to update the task.
- * @returns The updated task.
+ * @param vacanteId The ID of the vacante to update.
+ * @param request The request to update the vacante.
+ * @returns The updated vacante.
  */
 export const updateVacante = async (
-  todoId: string,
+  vacanteId: string,
   request: UpdateVacanteRequestDto,
 ): Promise<Vacante> => {
-  const response = await fetch(`/api/v1/vacantes/${todoId}`, {
+  const response = await fetch(`/api/v1/vacantes/${vacanteId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -99,16 +101,18 @@ export const updateVacante = async (
     }
   }
 
-  return todoResponseDtoToTodo((await response.json()) as TodoResponseDto);
+  return vacanteResponseDtoToVacante(
+    (await response.json()) as VacanteResponseDto,
+  );
 };
 
 /**
  * Delete an existing vacante.
  *
- * @param todoId The ID of the vacante to delete.
+ * @param vacanteId The ID of the vacante to delete.
  */
-export const deleteVacante = async (todoId: string): Promise<void> => {
-  const response = await fetch(`/api/v1/vacantes/${todoId}`, {
+export const deleteVacante = async (vacanteId: string): Promise<void> => {
+  const response = await fetch(`/api/v1/vacantes/${vacanteId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
