@@ -7,6 +7,21 @@ import {
   UpdateVacanteRequestDto,
 } from "./api.types";
 
+const backendUnreachableMessage = (response: Response) =>
+  `Request failed, is the backend running?: ${response.status} ${response.statusText}`;
+
+const readApiErrorMessage = async (response: Response): Promise<string> => {
+  try {
+    const errorResponse = (await response.json()) as ApiErrorResponseDto;
+    if (typeof errorResponse?.error === "string" && errorResponse.error) {
+      return errorResponse.error;
+    }
+  } catch {
+    // Proxy/gateway bodies are often HTML or empty, not ErrorDto JSON.
+  }
+  return backendUnreachableMessage(response);
+};
+
 /**
  * Create a new vacante.
  *
@@ -25,15 +40,7 @@ export const createVacante = async (
   });
 
   if (!response.ok) {
-    let errorMessage: string | undefined;
-
-    try {
-      const errorResponse = (await response.json()) as ApiErrorResponseDto;
-      errorMessage = errorResponse.error;
-    } catch {
-      errorMessage = `Request failed, is the backend running?: ${response.status} ${response.statusText}`;
-    }
-    throw new Error(errorMessage);
+    throw new Error(await readApiErrorMessage(response));
   }
 
   return vacanteResponseDtoToVacante(
@@ -55,15 +62,7 @@ export const listVacantes = async (): Promise<Vacante[]> => {
   });
 
   if (!response.ok) {
-    try {
-      const errorResponse = (await response.json()) as ApiErrorResponseDto;
-      throw new Error(errorResponse.error);
-    } catch {
-      // If JSON parsing fails, use status text as fallback
-      throw new Error(
-        `Request failed, is the backend running?: ${response.status} ${response.statusText}`,
-      );
-    }
+    throw new Error(await readApiErrorMessage(response));
   }
 
   const dtos = (await response.json()) as VacanteResponseDto[];
@@ -90,15 +89,7 @@ export const updateVacante = async (
   });
 
   if (!response.ok) {
-    try {
-      const errorResponse = (await response.json()) as ApiErrorResponseDto;
-      throw new Error(errorResponse.error);
-    } catch {
-      // If JSON parsing fails, use status text as fallback
-      throw new Error(
-        `Request failed, is the backend running?: ${response.status} ${response.statusText}`,
-      );
-    }
+    throw new Error(await readApiErrorMessage(response));
   }
 
   return vacanteResponseDtoToVacante(
@@ -120,13 +111,6 @@ export const deleteVacante = async (vacanteId: string): Promise<void> => {
   });
 
   if (!response.ok) {
-    let errorMessage: string | undefined;
-    try {
-      const errorResponse = (await response.json()) as ApiErrorResponseDto;
-      errorMessage = errorResponse.error;
-    } catch {
-      errorMessage = `Request failed, is the backend running?: ${response.status} ${response.statusText}`;
-    }
-    throw new Error(errorMessage);
+    throw new Error(await readApiErrorMessage(response));
   }
 };

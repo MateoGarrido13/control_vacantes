@@ -93,10 +93,7 @@ function VacanteDashboard({ onCreateNew, onEditVacante }: VacanteDashboardProps)
       <header className="page-header page-header--row">
         <div>
           <p className="page-eyebrow">Control de vacantes</p>
-          <h1 className="page-title">Panel Principal</h1>
-          <p className="page-lede">
-            Listado de vacantes registradas en el backend.
-          </p>
+          <h1 className="page-title">My WorkPath</h1>
         </div>
         <div className="dashboard-actions">
           <ThemeToggle />
