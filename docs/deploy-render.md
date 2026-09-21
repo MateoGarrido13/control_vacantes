@@ -29,9 +29,9 @@ Guardá esa URI; la vas a pegar en Render como `SUPABASE_DB_URL`. Ver también `
 5. Cuando pida variables, definí **`SUPABASE_DB_URL`** con la URI completa (marcala como **Secret**).
 6. Esperá el deploy. La URL pública será algo como:
 
-   `https://control-vacantes.onrender.com`
+   `https://control-vacantes-1.onrender.com`
 
-   (Si el nombre `control-vacantes` ya está tomado en tu cuenta, cambiá `name` en `render.yaml` y actualizá Netlify / `RENDER_API_URL`.)
+   (Si el servicio en Render tiene otro nombre, actualizá `frontend/netlify.toml` y `RENDER_API_URL`.)
 
 ### Opción B — Manual
 
@@ -53,7 +53,7 @@ Guardá esa URI; la vas a pegar en Render como `SUPABASE_DB_URL`. Ver también `
 Desde cualquier terminal (fish):
 
 ```fish
-set -x RENDER_API_URL https://control-vacantes.onrender.com
+set -x RENDER_API_URL https://control-vacantes-1.onrender.com
 curl --fail --silent --show-error $RENDER_API_URL/healthz
 ```
 
@@ -63,7 +63,7 @@ Pruebas completas de API: `backend/src/test/docs/curl_backend.md` (sección B).
 
 ## 3. Netlify (frontend)
 
-El archivo `frontend/netlify.toml` reenvía `/api/*` al backend en Render. Si tu URL de Render **no** es `https://control-vacantes.onrender.com`, editá la línea `to = "https://..."` con la URL real y volvé a desplegar el frontend.
+El archivo `frontend/netlify.toml` reenvía `/api/*` al backend en Render (`https://control-vacantes-1.onrender.com`). Si la URL de Render cambia, editá esa línea y volvé a desplegar el frontend.
 
 Build en Netlify (típico):
 

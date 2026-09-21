@@ -58,10 +58,10 @@ Esta prueba verifica que el backend desplegado en Render responde y persiste en 
 Definí la URL del servicio (fish):
 
 ```fish
-set -x RENDER_API_URL https://control-vacantes.onrender.com
+set -x RENDER_API_URL https://control-vacantes-1.onrender.com
 ```
 
-En bash/zsh: `export RENDER_API_URL=https://control-vacantes.onrender.com`
+En bash/zsh: `export RENDER_API_URL=https://control-vacantes-1.onrender.com`
 
 Si recreaste Render con otro nombre, cambiá esa URL. Ver `docs/deploy-render.md`.
 

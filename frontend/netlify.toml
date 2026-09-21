@@ -1,6 +1,6 @@
-# Actualizá la URL si el servicio en Render tiene otro nombre (ver docs/deploy-render.md).
+# Backend en Render. Ver docs/deploy-render.md.
 [[redirects]]
   from = "/api/*"
-  to = "https://control-vacantes.onrender.com/api/:splat"
+  to = "https://control-vacantes-1.onrender.com/api/:splat"
   status = 200
   force = true
