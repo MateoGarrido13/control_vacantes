@@ -47,3 +47,7 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Local secrets (use .env.example as template)
+.env
+.env.local

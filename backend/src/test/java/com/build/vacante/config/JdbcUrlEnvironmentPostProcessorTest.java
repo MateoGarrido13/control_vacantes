@@ -5,11 +5,32 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.postgresql.Driver;
+import org.springframework.boot.EnvironmentPostProcessor;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 
 class JdbcUrlEnvironmentPostProcessorTest {
+
+    @Test
+    void isRegisteredInSpringFactories() {
+        List<String> names = SpringFactoriesLoader.loadFactoryNames(
+            EnvironmentPostProcessor.class,
+            JdbcUrlEnvironmentPostProcessor.class.getClassLoader());
+        assertTrue(
+            names.contains(JdbcUrlEnvironmentPostProcessor.class.getName()),
+            () -> "Processor missing from META-INF/spring.factories: " + names);
+    }
+
+    @Test
+    void postgresDriverRejectsLibpqUriThatHikariReceivesOnRender() {
+        assertFalse(
+            new Driver()
+                .acceptsURL(
+                    "postgresql://postgres.abc:secret@aws-0-sa-east-1.pooler.supabase.com:5432/postgres"));
+    }
 
     @Test
     void convertsSupabaseUriIntoJdbcUrlAndCredentials() {
@@ -72,5 +93,31 @@ class JdbcUrlEnvironmentPostProcessorTest {
             "jdbc:postgresql://db.example.supabase.co:5432/postgres?sslmode=require",
             overrides.get("spring.datasource.url"));
         assertFalse(overrides.containsKey("spring.datasource.username"));
+    }
+
+    @Test
+    void doesNotForceSslOnLoopbackJdbcUrl() {
+        Map<String, Object> overrides = new LinkedHashMap<>();
+
+        JdbcUrlEnvironmentPostProcessor.applyNormalizedUrl(
+            "jdbc:postgresql://localhost:5433/vacantes",
+            overrides);
+
+        assertEquals(
+            "jdbc:postgresql://localhost:5433/vacantes",
+            overrides.get("spring.datasource.url"));
+    }
+
+    @Test
+    void keepsExplicitDisableSslOnLocalUrl() {
+        Map<String, Object> overrides = new LinkedHashMap<>();
+
+        JdbcUrlEnvironmentPostProcessor.applyNormalizedUrl(
+            "jdbc:postgresql://127.0.0.1:5433/vacantes?sslmode=disable",
+            overrides);
+
+        assertEquals(
+            "jdbc:postgresql://127.0.0.1:5433/vacantes?sslmode=disable",
+            overrides.get("spring.datasource.url"));
     }
 }

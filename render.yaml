@@ -1,0 +1,17 @@
+# Blueprint: https://render.com/docs/infrastructure-as-code
+# Tras conectar el repo, Render pedirá SUPABASE_DB_URL (secreto, no commitear).
+services:
+  - type: web
+    name: control-vacantes
+    runtime: docker
+    plan: free
+    region: saoPaulo
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: SUPABASE_DB_URL
+        sync: false
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:MaxRAMPercentage=75.0

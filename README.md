@@ -33,10 +33,32 @@ Después recargá el shell con `source ~/.zshrc`.
 
 Requiere Java 21.
 
+Contra **Postgres local** (sin Supabase; aísla la implementación del deploy):
+
 ```bash
-cd backend/vacante
+docker compose --profile local-db up -d postgres
+cd backend
+env SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run
+```
+
+`env` hace falta en fish (`VAR=valor cmd` no existe ahí). No hay un `mvn` global: usá `./mvnw` desde `backend/`.
+
+El test `VacantePostgresIsolationTest` hace lo mismo en Docker via Testcontainers. Las pruebas de Render/Supabase están en `backend/src/test/docs/curl_backend.md`.
+
+Contra la URI de Supabase (`SUPABASE_DB_URL` en el entorno):
+
+```bash
+cd backend
 ./mvnw spring-boot:run
 ```
+
+## Deploy (Render + Supabase)
+
+Guía paso a paso: [docs/deploy-render.md](docs/deploy-render.md).
+
+Resumen: conectá el repo en Render con el blueprint `render.yaml`, definí la variable secreta `SUPABASE_DB_URL` (URI del pooler de Supabase) y verificá `/healthz`. El frontend en Netlify debe apuntar a la misma URL pública del backend (`frontend/netlify.toml`).
+
+Plantilla de variables: `.env.example` (no commitear secretos).
 
 ## Frontend (desarrollo)
 
