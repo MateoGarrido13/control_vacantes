@@ -5,14 +5,15 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 
 /**
  * Accepts the URI that Supabase shows in the dashboard ({@code postgresql://user:pass@host/db})
- * and turns it into a JDBC URL plus username/password that Spring Boot / Hikari understand.
+ * and the invalid JDBC form {@code jdbc:postgresql://user:pass@host/db}, and turns them into a
+ * JDBC URL plus username/password that Spring Boot / Hikari understand.
  */
 public class JdbcUrlEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
@@ -21,7 +22,9 @@ public class JdbcUrlEnvironmentPostProcessor implements EnvironmentPostProcessor
     @Override
     public void postProcessEnvironment(
             ConfigurableEnvironment environment, SpringApplication application) {
-        String rawUrl = environment.getProperty("spring.datasource.url");
+        String rawUrl = firstPresent(
+            environment.getProperty("spring.datasource.url"),
+            environment.getProperty("SUPABASE_DB_URL"));
         if (rawUrl == null || rawUrl.isBlank() || rawUrl.contains("${")) {
             return;
         }
@@ -39,10 +42,11 @@ public class JdbcUrlEnvironmentPostProcessor implements EnvironmentPostProcessor
     }
 
     static void applyNormalizedUrl(String rawUrl, Map<String, Object> overrides) {
-        String url = rawUrl.trim();
+        String url = strip(rawUrl);
+        String parseable = url.startsWith("jdbc:") ? url.substring("jdbc:".length()) : url;
 
-        if (url.startsWith("postgres://") || url.startsWith("postgresql://")) {
-            URI uri = URI.create(url);
+        if (parseable.startsWith("postgres://") || parseable.startsWith("postgresql://")) {
+            URI uri = URI.create(parseable);
             String userInfo = uri.getUserInfo();
             if (userInfo != null && !userInfo.isBlank()) {
                 int colon = userInfo.indexOf(':');
@@ -58,6 +62,11 @@ public class JdbcUrlEnvironmentPostProcessor implements EnvironmentPostProcessor
                 }
             }
 
+            if (uri.getHost() == null || uri.getHost().isBlank()) {
+                throw new IllegalArgumentException(
+                    "SUPABASE_DB_URL no tiene host. Usá postgresql://user:pass@host:port/postgres");
+            }
+
             int port = uri.getPort() > 0 ? uri.getPort() : 5432;
             String path = uri.getPath() == null || uri.getPath().isBlank() ? "/postgres" : uri.getPath();
             String query = uri.getQuery();
@@ -68,6 +77,27 @@ public class JdbcUrlEnvironmentPostProcessor implements EnvironmentPostProcessor
         overrides.put("spring.datasource.url", ensureSslMode(url));
     }
 
+    private static String firstPresent(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    private static String strip(String rawUrl) {
+        String url = rawUrl.trim();
+        if ((url.startsWith("\"") && url.endsWith("\""))
+            || (url.startsWith("'") && url.endsWith("'"))) {
+            url = url.substring(1, url.length() - 1).trim();
+        }
+        return url;
+    }
+
     private static void copyIfPresent(
             ConfigurableEnvironment environment,
             Map<String, Object> overrides,
@@ -75,7 +105,7 @@ public class JdbcUrlEnvironmentPostProcessor implements EnvironmentPostProcessor
             String propertyKey) {
         String value = environment.getProperty(envKey);
         if (value != null && !value.isBlank()) {
-            overrides.put(propertyKey, value);
+            overrides.put(propertyKey, decode(strip(value)));
         }
     }
 
